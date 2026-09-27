@@ -1,58 +1,344 @@
-The MBL v1 reads as follows:
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Stack Underflow</title>
 
-Modular Builder License v1
-Copyright (c) [year] [Your Name / Company]
+        <style>
+            * {
+                box-sizing: border-box;
+            }
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, distribute, and sublicense the Software, subject to the following conditions:
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                place-items: center;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                background:
+                    radial-gradient(circle at top, #242424 0%, #111 45%, #080808 100%);
+                color: #eee;
+            }
 
-Definitions
+            main {
+                width: min(700px, calc(100% - 40px));
+                padding: 50px;
+                text-align: center;
+                background: rgba(25, 25, 25, 0.85);
+                border: 1px solid #333;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            }
 
-"MBL-Covered Code" means any file or any copyrightable portion of code that is copied from the Software, whether modified or unmodified, and any code derived from or based on such code. For the avoidance of doubt, MBL-Covered Code does not include material that is not protected by copyright, including ideas, concepts, methods, or other non-copyrightable elements under United States jurisdiction.
+            .prompt {
+                color: #777;
+                font-family: monospace;
+                font-size: 1rem;
+                margin-bottom: 15px;
+            }
 
-"Corresponding Source" means all source code necessary to generate, install, and run the object or binary form of the MBL-Covered Code, including build scripts, configuration files, and any modifications.
+            h1 {
+                margin: 0;
+                font-size: clamp(2.5rem, 8vw, 5rem);
+                letter-spacing: -0.05em;
+            }
 
-"Distribute" or "Distribution" means making the Software or MBL-Covered Code available to another party in any form, including source code, binary form, or as part of a larger work.
+            h1 span {
+                color: #7dd3fc;
+            }
 
-"Accessible" means that the Corresponding Source is made available to recipients via standard network downloading protocols (such as HTTP/HTTPS, FTP, or a public version control repository) at no charge, and without requiring the user to pay a fee, sign a Non-Disclosure Agreement (NDA), or provide personally identifiable information beyond what is technically necessary to facilitate the download.
+            p {
+                margin: 25px auto 0;
+                max-width: 520px;
+                color: #aaa;
+                font-size: 1.15rem;
+                line-height: 1.7;
+            }
 
-"Official MBL" is defined as a version of the MBL license which was published by the MBL Licensing Group at stackunderflow.org/MBL.
+            .status {
+                display: inline-block;
+                margin-top: 30px;
+                padding: 8px 14px;
+                border-radius: 999px;
+                background: #1d2a1f;
+                border: 1px solid #315238;
+                color: #9be7a6;
+                font-family: monospace;
+                font-size: 0.9rem;
+            }
 
-1. Modified Versions of MBL-Covered Code
-   a) Any modified or unmodified copy of any MBL-Covered Code, in source or binary form, must be licensed under this License.
-   b) Such code must be distributed in Corresponding Source form, or be accompanied by instructions sufficient to allow any recipient to obtain the complete Corresponding Source at no cost, without requiring payment, account creation, or access restrictions. This clause does not apply to requirements or restrictions imposed by a third-party hosting service not under the Distributor's direct control.
-   c) The Corresponding Source must contain the complete source code and modifications necessary to produce the corresponding binary or object form and must be provided in a durable and Accessible manner.
-   d) The act of calling functions, using APIs, or invoking MBL-Covered Code through a defined interface does not, by itself, cause the calling code to become MBL-Covered Code.
+            footer {
+                margin-top: 35px;
+                color: #555;
+                font-size: 0.85rem;
+            }
+        </style>
+    </head>
 
-2. Use in Larger Works and Linking
-   a) The Software may be used, linked, combined, or included in larger works, including through static linking, dynamic linking, or any other method of combining code.
-   b) A larger work that includes or links to the Software is not required to be licensed under this License.
-   c) Only MBL-Covered Code within the larger work is subject to this License.
-   d) Inclusion of the Software, whether in source or binary form, does not by itself cause the larger work to be considered a modified version of the Software.
-   e) Linking to the Software, whether statically or dynamically, does not by itself cause the linking code to be considered MBL-Covered Code or a modified version of the Software.
+    <article class="license">
+    	<header>
+    		<h1>Modular Builder License v1</h1>
+    		<p>Copyright (c) [year] [Your Name / Company]</p>
+    	</header>
 
-3. No Installation Restrictions
-   a) You may not distribute the Software or MBL-Covered Code in any form, including as part of a device or system, in a manner that prevents or restricts the recipient from installing, executing, or using modified versions of the MBL-Covered Code.
-   b) If you distribute the Software or MBL-Covered Code in a device or system, you must provide any information necessary to install and execute modified versions.
+    	<p>
+    		Permission is hereby granted, free of charge, to any person obtaining a copy
+    		of this software and associated documentation files (the
+    		<q>Software</q>), to use, copy, modify, merge, publish, distribute, and
+    		sublicense the Software, subject to the following conditions:
+    	</p>
 
-4. Patent Grant
-   a) Each contributor grants you a perpetual, worldwide, non-exclusive, royalty-free patent license under any patents they own or control that would necessarily be infringed by the use, modification, or distribution of the Software as permitted under this License.
-   b) If you initiate patent litigation claiming that the Software or any MBL-Covered Code infringes a patent, the patent licenses granted to you under this License terminate.
+    	<section>
+    		<h2>Definitions</h2>
 
-5. Redistribution Requirements
-   a) You must include a copy of this License with any Distribution of the Software or MBL-Covered Code.
-   b) You must retain all copyright notices and license notices in the Software and MBL-Covered Code.
-   c) If the MBL-Covered Code is combined with a larger work in a way that precludes dynamic linking, you must accompany the distribution with the unlinked object files or intermediate libraries of the larger work necessary to allow the recipient to relink the executable with a modified version of the MBL-Covered Code.
+    		<dl>
+    			<dt><q>MBL-Covered Code</q></dt>
+    			<dd>
+    				means any file or any copyrightable portion of code that is copied
+    				from the Software, whether modified or unmodified, and any code
+    				derived from or based on such code. For the avoidance of doubt,
+    				MBL-Covered Code does not include material that is not protected
+    				by copyright, including ideas, concepts, methods, or other
+    				non-copyrightable elements under United States jurisdiction.
+    			</dd>
 
-6. Disclaimer of Warranty and Liability
-   a) THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-   b) IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    			<dt><q>Corresponding Source</q></dt>
+    			<dd>
+    				means all source code necessary to generate, install, and run the
+    				object or binary form of the MBL-Covered Code, including build
+    				scripts, configuration files, and any modifications.
+    			</dd>
 
-7. General Provisions
-   a) This License shall be governed by the laws of the State of Ohio, United States of America, without regard to its conflict-of-law provisions.
-   b) Any legal action or proceeding arising out of or relating to this License shall be brought exclusively in a state or federal court located in the State of Ohio, United States of America.
-   c) If any provision of this License is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+    			<dt><q>Distribute</q> or <q>Distribution</q></dt>
+    			<dd>
+    				means making the Software or MBL-Covered Code available to another
+    				party in any form, including source code, binary form, or as part
+    				of a larger work.
+    			</dd>
 
-8. Later Versions
-   a) The copyright holder may license the Software under an Official MBL version other than the version originally specified.
-   b) If the Software License included specifies that a particular version of this License "or any later version" applies, you may choose to follow the terms of that specified version or any later version published by the copyright holder.
-   c) If one decides to create a derived work they may choose to terminate the "or any later version" clause and pin their code to a specific version of the MBL.
+    			<dt><q>Accessible</q></dt>
+    			<dd>
+    				means that the Corresponding Source is made available to recipients
+    				via standard network downloading protocols (such as HTTP/HTTPS,
+    				FTP, or a public version control repository) at no charge, and
+    				without requiring the user to pay a fee, sign a Non-Disclosure
+    				Agreement (NDA), or provide personally identifiable information
+    				beyond what is technically necessary to facilitate the download.
+    			</dd>
+
+    			<dt><q>Official MBL</q></dt>
+    			<dd>
+    				is defined as a version of the MBL license which was published by
+    				the MBL Licensing Group at
+    				<a href="https://stackunderflow.org/MBL">stackunderflow.org/MBL</a>.
+    			</dd>
+    		</dl>
+    	</section>
+
+    	<section>
+    		<h2>1. Modified Versions of MBL-Covered Code</h2>
+
+    		<ol type="a">
+    			<li>
+    				Any modified or unmodified copy of any MBL-Covered Code, in source
+    				or binary form, must be licensed under this License.
+    			</li>
+
+    			<li>
+    				Such code must be distributed in Corresponding Source form, or be
+    				accompanied by instructions sufficient to allow any recipient to
+    				obtain the complete Corresponding Source at no cost, without
+    				requiring payment, account creation, or access restrictions.
+    				This clause does not apply to requirements or restrictions
+    				imposed by a third-party hosting service not under the
+    				Distributor's direct control.
+    			</li>
+
+    			<li>
+    				The Corresponding Source must contain the complete source code and
+    				modifications necessary to produce the corresponding binary or
+    				object form and must be provided in a durable and Accessible
+    				manner.
+    			</li>
+
+    			<li>
+    				The act of calling functions, using APIs, or invoking MBL-Covered
+    				Code through a defined interface does not, by itself, cause the
+    				calling code to become MBL-Covered Code.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>2. Use in Larger Works and Linking</h2>
+
+    		<ol type="a">
+    			<li>
+    				The Software may be used, linked, combined, or included in larger
+    				works, including through static linking, dynamic linking, or any
+    				other method of combining code.
+    			</li>
+
+    			<li>
+    				A larger work that includes or links to the Software is not required
+    				to be licensed under this License.
+    			</li>
+
+    			<li>
+    				Only MBL-Covered Code within the larger work is subject to this
+    				License.
+    			</li>
+
+    			<li>
+    				Inclusion of the Software, whether in source or binary form, does
+    				not by itself cause the larger work to be considered a modified
+    				version of the Software.
+    			</li>
+
+    			<li>
+    				Linking to the Software, whether statically or dynamically, does
+    				not by itself cause the linking code to be considered
+    				MBL-Covered Code or a modified version of the Software.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>3. No Installation Restrictions</h2>
+
+    		<ol type="a">
+    			<li>
+    				You may not distribute the Software or MBL-Covered Code in any
+    				form, including as part of a device or system, in a manner that
+    				prevents or restricts the recipient from installing, executing, or
+    				using modified versions of the MBL-Covered Code.
+    			</li>
+
+    			<li>
+    				If you distribute the Software or MBL-Covered Code in a device or
+    				system, you must provide any information necessary to install and
+    				execute modified versions.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>4. Patent Grant</h2>
+
+    		<ol type="a">
+    			<li>
+    				Each contributor grants you a perpetual, worldwide,
+    				non-exclusive, royalty-free patent license under any patents they
+    				own or control that would necessarily be infringed by the use,
+    				modification, or distribution of the Software as permitted under
+    				this License.
+    			</li>
+
+    			<li>
+    				If you initiate patent litigation claiming that the Software or
+    				any MBL-Covered Code infringes a patent, the patent licenses
+    				granted to you under this License terminate.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>5. Redistribution Requirements</h2>
+
+    		<ol type="a">
+    			<li>
+    				You must include a copy of this License with any Distribution of
+    				the Software or MBL-Covered Code.
+    			</li>
+
+    			<li>
+    				You must retain all copyright notices and license notices in the
+    				Software and MBL-Covered Code.
+    			</li>
+
+    			<li>
+    				If the MBL-Covered Code is combined with a larger work in a way
+    				that precludes dynamic linking, you must accompany the
+    				distribution with the unlinked object files or intermediate
+    				libraries of the larger work necessary to allow the recipient to
+    				relink the executable with a modified version of the MBL-Covered
+    				Code.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>6. Disclaimer of Warranty and Liability</h2>
+
+    		<ol type="a">
+    			<li>
+    				<strong>
+    					THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    					EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    					OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND
+    					NON-INFRINGEMENT.
+    				</strong>
+    			</li>
+
+    			<li>
+    				<strong>
+    					IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+    					FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION
+    					OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+    					CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    					THE SOFTWARE.
+    				</strong>
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>7. General Provisions</h2>
+
+    		<ol type="a">
+    			<li>
+    				This License shall be governed by the laws of the State of Ohio,
+    				United States of America, without regard to its conflict-of-law
+    				provisions.
+    			</li>
+
+    			<li>
+    				Any legal action or proceeding arising out of or relating to this
+    				License shall be brought exclusively in a state or federal court
+    				located in the State of Ohio, United States of America.
+    			</li>
+
+    			<li>
+    				If any provision of this License is held to be invalid or
+    				unenforceable, the remaining provisions shall remain in full force
+    				and effect.
+    			</li>
+    		</ol>
+    	</section>
+
+    	<section>
+    		<h2>8. Later Versions</h2>
+
+    		<ol type="a">
+    			<li>
+    				The copyright holder may license the Software under an Official MBL
+    				version other than the version originally specified.
+    			</li>
+
+    			<li>
+    				If the Software License included specifies that a particular
+    				version of this License <q>or any later version</q> applies, you
+    				may choose to follow the terms of that specified version or any
+    				later version published by the copyright holder.
+    			</li>
+
+    			<li>
+    				If one decides to create a derived work they may choose to
+    				terminate the <q>or any later version</q> clause and pin their
+    				code to a specific version of the MBL.
+    			</li>
+    		</ol>
+    	</section>
+    </article>
+</html>
